@@ -1,0 +1,3 @@
+wandb
+opencv-python-headless
+natsort

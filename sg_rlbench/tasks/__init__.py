@@ -1,0 +1,1 @@
+from sg_rlbench.tasks.pick_and_lift_simple import PickAndLiftSimple
