@@ -1,3 +1,7 @@
 wandb
 opencv-python-headless
 natsort
+gym
+pillow
+pyquaternion
+h5py

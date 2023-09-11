@@ -1,5 +1,4 @@
 import gym
-import d4rl
 import numpy as np
 from jaxbc.utils.jaxbc_utils import yielding
 
