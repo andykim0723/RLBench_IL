@@ -40,6 +40,7 @@ def main(args):
         episodes_file_name.sort(key=natural_keys)
 
         episodes = []
+        lengths = []
         for file_name in episodes_file_name:
             episode = {}
             with open(data_path+"/"+file_name, 'rb') as f:
@@ -48,13 +49,20 @@ def main(args):
             sensors = episode_data['observations']['sensor']
             actions = episode_data['actions'] 
 
-            states = transform_states(sensors)
-
-            episode['observations'] = states
+            # states = transform_states(sensors)
+            # sensors = sensors[:,:-6]
+            episode['observations'] = sensors
             episode['actions'] = actions
+            episodes.append(episode) 
+            lengths.append(sensors.shape[0])
+        print("max_length:", max(lengths), "min_length: ",min(lengths))
+        print("num episodes:", len(episodes))
 
-        episodes.append(episode)                 
-        
+        # episode_length = [epi['actions'].shape[0]  for epi in episodes]                
+
+        cfg['policy_args']['observation_dim'] = episodes[0]['observations'].shape[1] 
+        cfg['policy_args']['action_dim'] = episodes[0]['actions'].shape[1]
+
         if cfg['info']['use_img_embedding']:
             cfg['policy_args']['observation_dim'] += 512
         replay_buffer = RlbenchStateBuffer(cfg,env=env)

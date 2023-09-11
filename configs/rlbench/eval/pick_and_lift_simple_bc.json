@@ -13,20 +13,9 @@
     },
 
     "info": {
-        "train_steps" :3e6,
-        "lr": 3e-4,
         "batch_size" : 50,
-        "buffer_size": 1e10,
-        "subseq_len": 1,
-        "data_path": "data/pick_and_lift_simple",
-
-
         "save_path": "results",
-        "log_interval": 1e5,
-        "save_interval": 1e5,
-        "eval_interval": 1e5,
-        
-        "eval_episodes": 1,
+        "eval_episodes": 5,
         "record_video": true
 
     },

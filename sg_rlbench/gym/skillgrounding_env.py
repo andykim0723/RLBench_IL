@@ -34,10 +34,13 @@ class SkillGroundingEnv(gym.Env):
             obs_config.overhead_camera.image_size = img_size
             obs_config.wrist_camera.image_size = img_size
             obs_config.front_camera.image_size = img_size
-
         else:
             raise ValueError(
                 'Unrecognised observation_mode: %s.' % observation_mode)
+        
+        obs_config.joint_velocities = False
+        obs_config.joint_forces = False
+        
         self.gripper_action_mode = gripper_action_mode
         # if self.gripper_action_mode == "continuous":
         #     action_mode = MoveArmThenGripper(JointPosition(absolute_mode=False), Continuous(gripper_action_scale=gripper_action_scale))
@@ -46,7 +49,7 @@ class SkillGroundingEnv(gym.Env):
         # action_mode = MoveArmThenGripper(JointPosition(absolute_mode=False), Discrete())
         action_mode = MoveArmThenGripper(JointPosition(absolute_mode=False), Discrete3())
         self.env = Environment(
-            action_mode, obs_config=obs_config, headless=True,static_positions=True)
+            action_mode, obs_config=obs_config, headless=True)
         self.env.launch()
         self.task = self.env.get_task(task_class)
         
@@ -159,9 +162,6 @@ class SkillGroundingEnv(gym.Env):
     def _robot_arm(self):
         return self.task._task.robot.arm
                 
-    @property
-    def _robot_arm(self):
-        return self.task._task.robot.arm
 
     def get_joint_positions(self):
         return np.array(self._robot_arm.get_joint_positions())

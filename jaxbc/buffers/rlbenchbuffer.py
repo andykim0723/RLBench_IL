@@ -204,7 +204,6 @@ class RlbenchStateBuffer(BaseBuffer):
         timesteps = []
         
         episodes = [self.episodes[batch_idx] for batch_idx in batch_inds]
-
         for episode in episodes:
             ep_len = len(episode['obs'])
                 # for starting_idx in starting_idxs:

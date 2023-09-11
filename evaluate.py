@@ -8,7 +8,7 @@ import numpy as np
 from jaxbc.modules.low_policy.low_policy import MLPpolicy
 from jaxbc.utils.common import save_video
 from envs.common import set_env
-from envs.eval_func import d4rl_evaluate, rlbench_evaluate
+from envs.eval_func import rlbench_evaluate
 
 from jax_resnet import pretrained_resnet
 import flax.linen as nn
@@ -16,7 +16,8 @@ import flax.linen as nn
 def main(args):
     ### cfg ###
     
-    config_filepath = os.path.join('configs','eval',args.mode+'.json')
+    
+    config_filepath = os.path.join('configs','rlbench','eval',args.mode+'.json')
     with open(config_filepath) as f:
         cfg = json.load(f)
 
@@ -30,14 +31,7 @@ def main(args):
     low_policy.load(load_path)
 
     ### evaluation ###
-    if cfg['env_name'] == "d4rl":
-        cfg['observation_dim'] = env.observation_space.shape
-        cfg['action_dim'] = int(np.prod(env.action_space.shape))
-
-        num_episodes = cfg['info']['eval_episodes']
-        reward_mean = np.mean(d4rl_evaluate(env,low_policy,num_episodes))
-        print("rewards: ", reward_mean)
-    elif cfg['env_name'] == "rlbench":
+    if cfg['env_name'] == "rlbench":
         resnet18, variables = pretrained_resnet(18)
         model = resnet18()
         model = nn.Sequential(model.layers[0:-1])

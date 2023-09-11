@@ -29,7 +29,7 @@ def env_step(env, last_gripper, timesteps, total_timesteps, observation_sensors,
     obs, reward, done, info = env.step(np.concatenate([np.zeros(7), np.array([last_gripper])], axis=0))
 
     img = env.render(mode='rgb_array')
-    Image.fromarray(img).save('test.png')
+    # Image.fromarray(img).save('test.png')
     observation_sensors.append(obs)
     observation_images.append(img)
     actions.append(info['expert_action'].copy())
@@ -39,7 +39,9 @@ def env_step(env, last_gripper, timesteps, total_timesteps, observation_sensors,
     infos.append(info)
     return timesteps, total_timesteps
 
-def collect_episodic_data(task, num_episode):
+def collect_episodic_data(task, num_episode,process_idx):
+    seed = 12345 + process_idx
+    np.random.seed(seed)
     tbar = tqdm.tqdm(range(num_episode))
 
     # task & gymenv creation
@@ -61,6 +63,13 @@ def collect_episodic_data(task, num_episode):
             waypoints = env.waypoints
             success = False
             last_gripper = 0.1
+            for i in range(len(env.waypoints)):
+                pos = env.waypoints[i]._waypoint.get_position()
+            # pos += np.random.normal(loc=0,scale=0.01,size=pos.shape)
+            error_region = 0.02
+            pos += np.clip(np.random.normal(size=pos.shape) * error_region, a_min=-error_region, a_max=error_region)
+            env.waypoints[i]._waypoint.set_position(pos)
+
             while True:
                 for p, point in enumerate(waypoints):
                     if point.skip:
@@ -73,6 +82,9 @@ def collect_episodic_data(task, num_episode):
                     ext = point.get_ext()
                     done = False
                     while not done:
+                        # add noise to waypoints 
+                        # 0.03
+                        # path._path_points += np.random.normal(loc=0,scale=0.00055,size=(path._path_points.size,))
                         done = path.step()
                         timesteps, total_timesteps = env_step(env, last_gripper, timesteps, total_timesteps, observations_sensors, observations_images, actions, rewards, terminals, infos)
                         tbar_description(tbar, env.task.get_name(), ext, p, len(waypoints)-1, timesteps, total_timesteps)
@@ -127,19 +139,29 @@ def collect_episodic_data(task, num_episode):
 
                 if not os.path.exists(os.path.join(DATA_PATH, env.task.get_name())):
                     os.mkdir(os.path.join(DATA_PATH, env.task.get_name()))
-                with open(os.path.join(DATA_PATH, env.task.get_name(), "episode_{}.pkl".format(k)), 'wb') as f:
+                with open(os.path.join(DATA_PATH, env.task.get_name(), "episode_{}_{}.pkl".format(process_idx,k)), 'wb') as f:
                     pkl.dump(data_dict, f)
                 break
 
 if __name__ == '__main__':
     task_name = "pick_and_lift_simple-vision-v0"
-    collect_episodic_data(task_name, num_episode=5)
-    exit()
-    for j in range(5):
-        # processes = [Process(target=collect_episodic_data, args=(ALL_TASK[i + j * 5], 200)) for i in range(5)]
-        # [t.start() for t in processes]
-        # [t.join() for t in processes]
+    # collect_episodic_data(task_name, num_episode=3,process_idx=1)
+    # exit()
+    # for j in range(5):
+    #     processes = [Process(target=collect_episodic_data, args=(task_name,10,j)) for i in range(5)]
+    #     [t.start() for t in processes]
+    #     [t.join() for t in processes]
+    
+    num_process = 5
+    processes = [] 
+    for i in range(num_process):
+        p = Process(target=collect_episodic_data, args=(task_name,100,i+1))
+        p.start()
+        processes.append(p)
+    
+    for p in processes:
+        p.join()
 
-        import RLBench.rlbench.gym
-        task_name = "pick_and_lift_simple-vision-v0"
-        collect_episodic_data(task_name, num_episode=5)
+        # import RLBench.rlbench.gym
+        # task_name = "pick_and_lift_simple-vision-v0"
+        # collect_episodic_data(task_name, num_episode=5)

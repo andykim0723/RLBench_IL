@@ -1,1 +1,1 @@
-python evaluate.py --mode 'pick_and_lift_simple_bc' --load_path '/home/andykim0723/jax_bc/results/pick_and_lift_simple_bc/weights/500000_'
+python evaluate.py --mode 'pick_and_lift_simple_bc' --load_path '/home/andykim0723/SkillGrounding/results/pick_and_lift_simple_bc/weights/400000_'
