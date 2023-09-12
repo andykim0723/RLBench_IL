@@ -58,7 +58,16 @@ def collect_episodic_data(task, num_episode,process_idx):
         total_timesteps = 0
 
         while True:
-            env.reset()
+            obs = env.reset()
+            img = env.render(mode='rgb_array')
+            observations_sensors.append(obs)
+            observations_images.append(img)
+
+                # "state": obs.get_low_dim_data(),
+                # "left_shoulder_rgb": obs.left_shoulder_rgb,
+                # "right_shoulder_rgb": obs.right_shoulder_rgb,
+                # "wrist_rgb": obs.wrist_rgb,
+                # "front_rgb": obs.front_rgb,
             timesteps = 0
             waypoints = env.waypoints
             success = False
@@ -66,7 +75,7 @@ def collect_episodic_data(task, num_episode,process_idx):
             for i in range(len(env.waypoints)):
                 pos = env.waypoints[i]._waypoint.get_position()
             # pos += np.random.normal(loc=0,scale=0.01,size=pos.shape)
-            error_region = 0.02
+            error_region = 0.01
             pos += np.clip(np.random.normal(size=pos.shape) * error_region, a_min=-error_region, a_max=error_region)
             env.waypoints[i]._waypoint.set_position(pos)
 
@@ -130,6 +139,8 @@ def collect_episodic_data(task, num_episode,process_idx):
                 print(f'{env.task.get_name()} success')
                 data_dict = {}
                 data_dict['observations'] = {}
+                observations_sensors.pop()
+                observations_images.pop
                 data_dict['observations']['sensor'] = np.array(observations_sensors)
                 data_dict['observations']['image'] = np.array(observations_images)
                 data_dict['actions'] = np.array(actions)
@@ -155,7 +166,7 @@ if __name__ == '__main__':
     num_process = 5
     processes = [] 
     for i in range(num_process):
-        p = Process(target=collect_episodic_data, args=(task_name,100,i+1))
+        p = Process(target=collect_episodic_data, args=(task_name,40,i+1))
         p.start()
         processes.append(p)
     

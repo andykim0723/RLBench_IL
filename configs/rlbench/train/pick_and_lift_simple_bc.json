@@ -5,25 +5,25 @@
     "policy": "bc",
     "policy_args": {
         "feature_extractor": false,
-        "architecture": [128,128],
+        "architecture": [400,300],
         "tanh_action": true,
         "observation_dim": null,
         "action_dim": null
     },
 
     "info": {
-        "train_steps" :3e6,
-        "lr": 3e-4,
-        "batch_size" : 500,
+        "train_steps" :3e5,
+        "lr": 1e-4,
+        "batch_size" : 64,
         "buffer_size": 1e10,
         "subseq_len": 1,
         "data_path": "data/pick_and_lift_simple",
         "use_img_embedding": false,
 
         "save_path": "results",
-        "log_interval": 2e5,
-        "save_interval": 2e5,
-        "eval_interval": 2e5,
+        "log_interval": 2.5e4,
+        "save_interval": 2.5e4,
+        "eval_interval": 2.5e4,
         
         "eval_episodes": 3,
         "record_video": true

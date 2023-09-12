@@ -27,7 +27,10 @@ def data_verify():
         with open(os.path.join(datapath,path),'rb') as f:
             data = pkl.load(f)
             sensor = data['observations']['sensor']
+            action = data['actions']
             lengths.append(sensor.shape[0])
+            print('{}, {}'.format(sensor.shape[0]==action.shape[0],action.shape))
+
     print(max(lengths),min(lengths))
     exit()
     filename = 'episode_3_30'
@@ -132,6 +135,6 @@ def waypoint_check():
     # create waypoint
     pass
 if __name__ == '__main__':
-    waypoint_check()
-    # data_verify()
+    # waypoint_check()
+    data_verify()
     # check_state()
