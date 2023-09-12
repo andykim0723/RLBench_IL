@@ -1,5 +1,6 @@
 import sys
 import os
+import argparse
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import argparse
 import tqdm
@@ -13,6 +14,7 @@ from pyrep.errors import ConfigurationPathError
 
 from sg_rlbench.gym.skillgrounding_env import SkillGroundingEnv
 from sg_rlbench.tasks.pick_and_lift_simple import PickAndLiftSimple 
+from sg_rlbench.tasks.pick_and_lift_simple2 import PickAndLiftSimple2
 
 
 from itertools import product
@@ -45,7 +47,11 @@ def collect_episodic_data(task, num_episode,process_idx):
     tbar = tqdm.tqdm(range(num_episode))
 
     # task & gymenv creation
-    task = PickAndLiftSimple
+    if '2' in task:
+        task = PickAndLiftSimple2
+    else:
+        task = PickAndLiftSimple
+
     env = SkillGroundingEnv(task_class=task, render_mode='rgb_array')
  
     for k in tbar:
@@ -140,7 +146,7 @@ def collect_episodic_data(task, num_episode,process_idx):
                 data_dict = {}
                 data_dict['observations'] = {}
                 observations_sensors.pop()
-                observations_images.pop
+                observations_images.pop()
                 data_dict['observations']['sensor'] = np.array(observations_sensors)
                 data_dict['observations']['image'] = np.array(observations_images)
                 data_dict['actions'] = np.array(actions)
@@ -155,14 +161,13 @@ def collect_episodic_data(task, num_episode,process_idx):
                 break
 
 if __name__ == '__main__':
-    task_name = "pick_and_lift_simple-vision-v0"
-    # collect_episodic_data(task_name, num_episode=3,process_idx=1)
-    # exit()
-    # for j in range(5):
-    #     processes = [Process(target=collect_episodic_data, args=(task_name,10,j)) for i in range(5)]
-    #     [t.start() for t in processes]
-    #     [t.join() for t in processes]
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--task",type=str, default="bc", required=True)
+    args = parser.parse_args()
+
+    task_name = args.task + '-vision-v0'
+
     num_process = 5
     processes = [] 
     for i in range(num_process):

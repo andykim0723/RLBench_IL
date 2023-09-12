@@ -1,0 +1,37 @@
+{
+    "seed": 42,
+    "env_name" : "rlbench",
+    "task_name": "pick_and_lift_simple2",
+    "policy": "bc",
+    "policy_args": {
+        "feature_extractor": false,
+        "architecture": [400,300],
+        "tanh_action": true,
+        "observation_dim": null,
+        "action_dim": null
+    },
+
+    "info": {
+        "train_steps" :2e5,
+        "lr": 1e-4,
+        "batch_size" : 64,
+        "buffer_size": 1e10,
+        "subseq_len": 1,
+        "data_path": "data/pick_and_lift_simple2",
+        "use_img_embedding": false,
+
+        "save_path": "results",
+        "log_interval": 2.5e4,
+        "save_interval": 2.5e4,
+        "eval_interval": 2.5e4,
+        
+        "eval_episodes": 3,
+        "record_video": true
+
+    },
+
+    "wandb":{
+        "record": true,
+        "entity": "andykim0723"
+    }
+}

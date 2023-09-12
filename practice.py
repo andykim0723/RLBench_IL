@@ -21,7 +21,7 @@ def data_verify():
     #     sensor4 = data['observations']['sensor']
         
     # print(sensor4-sensor1)
-    datapath = "/home/andykim0723/SkillGrounding/data/pick_and_lift_simple"
+    datapath = "/home/andykim0723/SkillGrounding/data/pick_and_lift_simple2"
     lengths = []
     for path in os.listdir(datapath):
         with open(os.path.join(datapath,path),'rb') as f:

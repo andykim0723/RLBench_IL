@@ -1,1 +1,1 @@
-python data_collection.py
+python data_collection.py --task 'pick_and_lift_simple2'

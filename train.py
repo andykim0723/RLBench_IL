@@ -78,7 +78,7 @@ if __name__ == '__main__':
     
     parser.add_argument(
         "--task",type=str, default="d4rl-halfcheetah",
-        choices=['d4rl-halfcheetah','d4rl-hopper','rlbench-pick_and_lift_simple'],
+        choices=['rlbench-pick_and_lift_simple','rlbench-pick_and_lift_simple2'],
         required=True)
 
     parser.add_argument(
